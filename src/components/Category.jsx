@@ -4,29 +4,22 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import {useDispatch, useSelector} from 'react-redux'
+import {fetchGenres} from '../features/movies/moviesSlice'
 
 
 
 const Categories = () => {
-  const [category, setCategory] = useState([])
   const navigate = useNavigate();
+  const genre = useSelector(state=> state.movies.genre)
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchGenres());
+  }, [dispatch]);
   
   const enter = (genres) => {
       navigate(`/genre/${genres}`)
   }
-  
-  const loadCategory = async () => {
-      try {
-      const res = await axios.get("https://api.themoviedb.org/3/genre/movie/list?api_key=8c60b3b49802b54dd5f23e9f9e0d92b6");
-      setCategory(res.data.genres)
-      } catch (error) {
-        console.error(error)
-      }
-    };
-  
-    useEffect(() => {
-      loadCategory();
-    }, [])
     
     return(
     <>
@@ -45,9 +38,9 @@ const Categories = () => {
       slidesPerView={8}
       onSlideChange={() => console.log('slide change')}
       onSwiper={(swiper) => console.log(swiper)}
-      key={category.id}
+      key={genre.id}
     >
-      {category.length > 0 && category.map(list =>{
+      {genre.length > 0 && genre.map(list =>{
           return<SwiperSlide ><button className="btn-category"
           onClick={()=> enter(list.id)}>{list.name}</button></SwiperSlide>
       })}

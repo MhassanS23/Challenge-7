@@ -7,26 +7,19 @@ import {useNavigate} from 'react-router-dom'
 import Navbars from './Navbar'
 import logo from './back1.jpg'
 import {useParams} from 'react-router-dom'
+import {useDispatch, useSelector} from 'react-redux'
+import {fetchDetail} from '../features/movies/moviesSlice'
 
 
 
 
 const Genres = () => {
-  const [genre, setGenre] = useState([])
   const {cat} = useParams()
-
-  const loadMovie = async () => {
-    try {
-    const res = await axios.get(`https://api.themoviedb.org/3/discover/movie?&api_key=8c60b3b49802b54dd5f23e9f9e0d92b6&with_genres=${cat}`);
-    setGenre(res.data.results)
-    } catch (error) {
-      console.error(error)
-    }
-  };
-
-  useEffect(() => {
-    loadMovie();
-  }, [])
+  const details = useSelector(state=> state.movies.detail)
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchDetail(cat));
+  }, [dispatch]);
 
     return(
     <>
@@ -42,7 +35,7 @@ const Genres = () => {
     </div>
       <div className="containerHome">
       <div className="card-grid">
-        {genre.map((mov)=>{
+        {details.map((mov)=>{
           return<Cards movie={mov}/>
         })}
       </div>

@@ -8,19 +8,23 @@ import Detail from './components/Detail.js'
 import Searchs from './components/Search.jsx'
 import Allmovies from './components/Allmovie.jsx'
 import Genres from './components/Genre.jsx'
+import {store} from './app/store';
+import {Provider} from 'react-redux';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App/>}/>
-        <Route path="/:id" element={<Detail/>}/>
-        <Route path="/search/:name" element={<Searchs/>}/>
-        <Route path="/all-movie" element={<Allmovies/>}/>
-        <Route path="/genre/:cat" element={<Genres/>}/>
-      </Routes>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App/>}/>
+          <Route path="/:id" element={<Detail/>}/>
+          <Route path="/search/:name" element={<Searchs/>}/>
+          <Route path="/all-movie" element={<Allmovies/>}/>
+          <Route path="/genre/:cat" element={<Genres/>}/>
+        </Routes>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 

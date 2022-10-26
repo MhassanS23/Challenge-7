@@ -92,6 +92,10 @@ input::placeholder{
   cursor: pointer;
 }
 
+.card{
+  cursor: pointer;
+}
+
 
 .header-listMovie{
   padding: 1rem;
@@ -156,6 +160,11 @@ input::placeholder{
   border:  1px solid rgb(247, 53, 53);
   padding: 0.5rem;
   margin-right: 1rem;
+  cursor: pointer;
+}
+
+.movie-genre:hover{
+  background-color: rgb(59, 55, 55);
 }
 
 .movie-genre-container{

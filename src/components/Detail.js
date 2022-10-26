@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import {useState, useEffect} from 'react'
-import {useParams} from 'react-router-dom'
+import {useParams, useNavigate} from 'react-router-dom'
 import Navbars from './Navbar'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
@@ -10,6 +10,7 @@ import {
 
 
 export default function Detail(){
+    const navigate = useNavigate();
     let {id} = useParams();
     const [movies, setMovie] = useState([])
     let IMG_BASEURL = "https://image.tmdb.org/t/p/w500";
@@ -28,6 +29,10 @@ export default function Detail(){
         loadMovie();
     }, [])
 
+    const enter = (genres) => {
+      navigate(`/genre/${genres}`)
+    }
+
     return(
     <>
      <Navbars/>
@@ -45,7 +50,7 @@ export default function Detail(){
         </div>
         <div className="movie-genre-container">
             {movies && movies.genres ? movies.genres.map(genre=>(
-                <><span className="movie-genre" id={genre.id}>{genre.name}</span></>
+                <><span className="movie-genre" onClick={()=> enter(genre.id)}>{genre.name}</span></>
             )) : ""}
         </div>
         <div className="preview-film">
