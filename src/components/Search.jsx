@@ -5,25 +5,18 @@ import Cards from './Card.jsx'
 import {useParams} from 'react-router-dom'
 import Navbars from './Navbar'
 import logo from './back1.jpg'
+import {useDispatch, useSelector} from 'react-redux'
+import {fetchSearch} from '../features/movies/moviesSlice'
 
 
 const Searchs = () => {
     const {name} = useParams()
-    const [search, setSearch] = useState([])
+    const search = useSelector(state=> state.movies.search)
+    const dispatch = useDispatch();
+    useEffect(()=>{
+      dispatch(fetchSearch(name));
+    }, [dispatch]);
 
-    const functionSearch = async(e) => {
-        try {
-          const res = await axios.get(`https://api.themoviedb.org/3/search/movie?&api_key=8c60b3b49802b54dd5f23e9f9e0d92b6&query=${name}`);
-          console.log(res)
-          setSearch(res.data.results)
-        } catch (error) {
-          console.error(error)
-        }
-      }
-
-      useEffect(() => {
-        functionSearch();
-      }, [])
     return(
     <>
     <div className="search-header">

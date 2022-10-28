@@ -7,27 +7,19 @@ import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {
   faPlayCircle, faStar, faStarAndCrescent
 } from '@fortawesome/free-solid-svg-icons'
+import {useDispatch, useSelector} from 'react-redux'
+import {fetchDetailFilm} from '../features/movies/moviesSlice'
 
 
 export default function Detail(){
     const navigate = useNavigate();
     let {id} = useParams();
-    const [movies, setMovie] = useState([])
     let IMG_BASEURL = "https://image.tmdb.org/t/p/w500";
-
-    const loadMovie = async () => {
-        try {
-        const res = await axios.get(`https://api.themoviedb.org/3/movie/${id}?api_key=8c60b3b49802b54dd5f23e9f9e0d92b6`);
-        setMovie(res.data)
-        console.log(res)
-        } catch (error) {
-        console.error(error)
-        }
-    };
-
-    useEffect(() => {
-        loadMovie();
-    }, [])
+    const detailfilms = useSelector(state=> state.movies.detailfilm)
+    const dispatch = useDispatch();
+    useEffect(()=>{
+      dispatch(fetchDetailFilm(id));
+    }, [dispatch]);
 
     const enter = (genres) => {
       navigate(`/genre/${genres}`)
@@ -38,28 +30,28 @@ export default function Detail(){
      <Navbars/>
     <div className="container-detail">
       <div className="detail-film">
-        {movies &&
+        {detailfilms &&
         <img
           className="picFilm"
-          src={IMG_BASEURL+movies.backdrop_path}
+          src={IMG_BASEURL+detailfilms.backdrop_path}
         />
         }
       <div className="detail">
         <div className="title-film">
-            <h1>{movies ? movies.title : ""}</h1>
+            <h1>{detailfilms ? detailfilms.title : ""}</h1>
         </div>
         <div className="movie-genre-container">
-            {movies && movies.genres ? movies.genres.map(genre=>(
+            {detailfilms && detailfilms.genres ? detailfilms.genres.map(genre=>(
                 <><span className="movie-genre" onClick={()=> enter(genre.id)}>{genre.name}</span></>
             )) : ""}
         </div>
         <div className="preview-film">
-            <h4>{movies ? movies.overview : ""}</h4>
+            <h4>{detailfilms ? detailfilms.overview : ""}</h4>
             <div></div>
         </div>
         <div className="rating-film">
             <span className="bintang"><FontAwesomeIcon icon={faStar} /></span>
-            <p>{movies && movies.vote_average ? `${(movies.vote_average).toFixed(1)}/${Math.ceil(movies.vote_average)}` : ""}</p>
+            <p>{detailfilms && detailfilms.vote_average ? `${(detailfilms.vote_average).toFixed(1)}/${Math.ceil(detailfilms.vote_average)}` : ""}</p>
         </div>
         <button className="tombol-trailer"><FontAwesomeIcon icon={faPlayCircle} /> WATCH TRAILER</button>
       </div>

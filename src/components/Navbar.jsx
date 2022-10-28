@@ -11,6 +11,8 @@ import {Modal, ModalHeader, Row, ModalBody, Col} from 'reactstrap'
 import usePasswordToggles from './usePasswordToggle'
 import axios from 'axios'
 import { GoogleLogin } from '@react-oauth/google';
+import {useDispatch, useSelector} from 'react-redux'
+import {googleLogin, loginUser, registerUser} from '../features/movies/moviesSlice'
 
 
 
@@ -20,11 +22,22 @@ const Navbars = () => {
     const [search, setSearch] = useState([])
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
+    const dataLogin = {
+        email: email,
+        password: password,
+    }
     const [firstName, setFirstname] = useState("")
     const [lastName, setLastname] = useState("")
     const [emailRegis, setEmailregis] = useState("")
     const [passRegis, setPasswordregis] = useState("")
     const [passConfir, setPasswordconfir] = useState("")
+    const dataRegister = {
+        first_name: firstName,
+        last_name: lastName,
+        email: emailRegis,
+        password: passRegis,
+        password_confirmation: passConfir,
+    }
     const [modal, setModal] = useState(false)
     const [modal2, setModal2] = useState(false)
     const [modal3, setModal3] = useState(false)
@@ -39,30 +52,16 @@ const Navbars = () => {
     const [Error, setError] = useState('')
     const loggedIn = localStorage.getItem('isLoggedin');
     const profilNama = localStorage.getItem('profile');
+    const Token = localStorage.getItem('token');
+    const dispatch = useDispatch();
 
-    const handleSubmit = async (e) =>{
-        e.preventDefault();
-        try {
-        const res = await axios.post("https://notflixtv.herokuapp.com/api/v1/users/login",{email : email, password : password,});
-        localStorage.setItem('token', JSON.stringify(res.data.data));
-        localStorage.setItem('isLoggedin', true)
-        console.log(res)
-        setEmail('');
-        setPassword('');
-        setModal(false)
-        localStorage.setItem('profile', `${res.data.data.first_name} ${res.data.data.last_name}`);
-        } catch (error) {
-            if(error.response.data.statusCode == 422){
-                setError('Please fill the Form')
-                setModal3(true)
-            }else if(error.response.data.statusCode == 400){
-                setError('Account not Registered or Email and Password not Match')
-                setModal3(true)
-            }else{
-                setError('Registration Failed')
-                setModal3(true)
-            }
-        }
+    const handleSubmit = async (value) =>{
+       value.preventDefault();
+       dispatch(loginUser(dataLogin))
+       setEmail('')
+       setPassword('')
+       setModal(false)
+       window.location.reload()
     }
 
 
@@ -73,6 +72,11 @@ const Navbars = () => {
         navigate('/')
     }
 
+    const submitLogin = (credential) => {
+    dispatch(googleLogin(credential))
+    setModal(false)
+  };
+
     
 
     const handleRegis = async (e) =>{
@@ -82,34 +86,13 @@ const Navbars = () => {
         checkEmail();
         checkPass();
         checkPassCon();
-        try {
-        const res = await axios.post("https://notflixtv.herokuapp.com/api/v1/users",
-        {
-            first_name: firstName,
-            last_name: lastName,
-            email: emailRegis,
-            password: passRegis,
-            password_confirmation: passConfir,
-        });
-        localStorage.setItem('user', JSON.stringify(res.data.data));
+        dispatch(registerUser(dataRegister))
         setFirstname('');
         setLastname('');
         setEmailregis('');
         setPasswordregis('');
         setPasswordconfir('');
         setModal2(false)
-        } catch (error) {
-            if(error.response.data.statusCode == 422){
-                setError('Please fill the Form')
-                setModal3(true)
-            }else if(error.response.data.statusCode == 400){
-                setError('Email Already Registered')
-                setModal3(true)
-            }else{
-                setError('Registration Failed')
-                setModal3(true)
-            }
-        }
     }
 
     const checkEmail = () => {
@@ -180,7 +163,7 @@ const Navbars = () => {
                 {console.log(search)}
                 <button  className="btn-search" onClick={submit}><FontAwesomeIcon icon={faSearch} /></button>
             </form>
-            {loggedIn ?  
+            {loggedIn && Token ?  
                 <div className="menu2">
                     <span><FontAwesomeIcon icon={faUser} /></span>
                     <h3> {profilNama} </h3>
@@ -204,7 +187,7 @@ const Navbars = () => {
             <ModalHeader
                 toggle={()=> setModal3(!modal3)}
             >
-                Error
+                Alert
             </ModalHeader>
             <ModalBody>
                 <h1>{Error}</h1>
@@ -240,13 +223,7 @@ const Navbars = () => {
                         <Col className="button-form-login">
                             <button className="submit" type='submit'>Login</button>
                             <GoogleLogin
-                            onSuccess={credentialResponse => {
-                                console.log(credentialResponse);
-                                localStorage.setItem('token', JSON.stringify(credentialResponse.credential));
-                                localStorage.setItem('isLoggedin', true)
-                                localStorage.setItem('profile', "Google User");
-                                setModal(false)
-                            }}
+                            onSuccess={submitLogin}
                             onError={() => {
                                 console.log('Login Failed');
                             }}
