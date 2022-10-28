@@ -15,6 +15,7 @@ import {fetchMovies} from './features/movies/moviesSlice'
 
 function App() {
   const movies = useSelector(state=> state.movies.movies)
+  const loading = useSelector(state=> state.movies.loading)
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(fetchMovies());
@@ -28,7 +29,8 @@ function App() {
     <Navbars/>
     <Carouselfilms/>
     <Headers/>
-    <Swipers movie={movies}/>
+    {loading && <h1 className="movies">Loading....</h1>}
+    {!loading && <Swipers movie={movies}/>}
     <Categories/>
     {/* <Categories movie={movie} setFiltered={setFiltered} activeGenre={activeGenre} setActivegenre={setActivegenre}/>
     <div className="containerHome">
@@ -38,7 +40,8 @@ function App() {
         })}
       </div>
     </div> */}
-    <Swipers movie={movies}/>
+    {loading && <h1 className="movies">Loading....</h1>}
+    {!loading && <Swipers movie={movies}/>}
     </GoogleOAuthProvider>
     </div>
   );

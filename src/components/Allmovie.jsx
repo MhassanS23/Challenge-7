@@ -5,24 +5,17 @@ import axios from 'axios'
 import {useState, useEffect} from 'react'
 import {useNavigate} from 'react-router-dom'
 import logo from './back1.jpg'
+import {useDispatch, useSelector} from 'react-redux'
+import {fetchMovies} from '../features/movies/moviesSlice'
 
 
 const Allmovies = () => {
-  const [movie, setMovie] = useState([])
-  const navigate = useNavigate();
-
-  const loadMovie = async () => {
-    try {
-    const res = await axios.get("https://api.themoviedb.org/3/discover/movie?&api_key=8c60b3b49802b54dd5f23e9f9e0d92b6");
-    setMovie(res.data.results)
-    } catch (error) {
-      console.error(error)
-    }
-  };
-
-  useEffect(() => {
-    loadMovie();
-  }, [])
+  const movies = useSelector(state=> state.movies.movies)
+  const loading = useSelector(state=> state.movies.loading)
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchMovies());
+  }, [dispatch]);
     
     return(
     <>
@@ -37,14 +30,16 @@ const Allmovies = () => {
     <div className="tulisan-pojok">
         <h1>All Movies</h1>
     </div>
-
+    {loading && <h1 className="movies">Loading....</h1>}
+    {!loading && 
     <div className="containerHome">
-        <div className="card-grid">
-        {movie.length > 0 && movie.map(film =>{
-            return<Cards movie = {film} />
-        })}
-        </div>
+      <div className="card-grid">
+    {movies.length > 0 && movies.map(film =>{
+        return<Cards movie = {film} />
+    })}
     </div>
+      </div>
+    }
     </>
     )
 }
