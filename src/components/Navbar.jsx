@@ -61,6 +61,7 @@ const Navbars = () => {
        setEmail('')
        setPassword('')
        setModal(false)
+       window.location.reload(true)
     }
 
 
