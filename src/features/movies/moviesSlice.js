@@ -166,6 +166,7 @@ export const movSlice = createSlice({
         },
         [registerUser.fulfilled]: (state, {payload}) => {
             state.loading = false
+            window.location.reload()
         },
         [registerUser.rejected]: (state) => {
             state.loading = false
