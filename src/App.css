@@ -263,7 +263,7 @@ input::placeholder{
 
 .password-toggle-icon1{
   position: absolute;
-  top: 19rem;
+  top: 13.4rem;
   right: 2.295rem;
   z-index: 1000;
   cursor: pointer;
@@ -271,7 +271,7 @@ input::placeholder{
 
 .password-toggle-icon2{
   position: absolute;
-  top: 24.70rem;
+  top: 13.4rem;
   right: 2.295rem;
   z-index: 1000;
   cursor: pointer;
@@ -302,7 +302,7 @@ input::placeholder{
 
 .mail2{
   position: absolute;
-  top: 13.4rem;
+  top: 7.8rem;
   right: 2.295rem;
   z-index: 900;
   cursor: pointer;

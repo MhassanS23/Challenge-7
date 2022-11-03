@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div className="App">
-    <GoogleOAuthProvider clientId="414434174427-nic0jjfbcvqaubflqajvvs5gedceip02.apps.googleusercontent.com">
+    {/* <GoogleOAuthProvider clientId="414434174427-nic0jjfbcvqaubflqajvvs5gedceip02.apps.googleusercontent.com"> */}
     <Navbars/>
     <Carouselfilms/>
     <Headers/>
@@ -42,7 +42,7 @@ function App() {
     </div> */}
     {loading && <h1 className="movies">Loading....</h1>}
     {!loading && <Swipers movie={movies}/>}
-    </GoogleOAuthProvider>
+    {/* </GoogleOAuthProvider> */}
     </div>
   );
 }

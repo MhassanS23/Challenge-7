@@ -13,6 +13,8 @@ import axios from 'axios'
 import { GoogleLogin } from '@react-oauth/google';
 import {useDispatch, useSelector} from 'react-redux'
 import {googleLogin, loginUser, registerUser} from '../features/movies/moviesSlice'
+import { auth, signInWithEmailAndPassword, signInWithGoogle, logInWithEmailAndPassword, registerWithEmailAndPassword, logout } from "./firebase.js";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 
 
@@ -22,21 +24,19 @@ const Navbars = () => {
     const [search, setSearch] = useState([])
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const dataLogin = {
+    let dataLogin = {
         email: email,
         password: password,
     }
-    const [firstName, setFirstname] = useState("")
+    const [name, setName] = useState("")
     const [lastName, setLastname] = useState("")
     const [emailRegis, setEmailregis] = useState("")
     const [passRegis, setPasswordregis] = useState("")
     const [passConfir, setPasswordconfir] = useState("")
     const dataRegister = {
-        first_name: firstName,
-        last_name: lastName,
+        last_name: name,
         email: emailRegis,
         password: passRegis,
-        password_confirmation: passConfir,
     }
     const [modal, setModal] = useState(false)
     const [modal2, setModal2] = useState(false)
@@ -54,25 +54,26 @@ const Navbars = () => {
     const profilNama = localStorage.getItem('profile');
     const Token = localStorage.getItem('token');
     const dispatch = useDispatch();
+    const [user, loading, error] = useAuthState(auth);
 
     const handleSubmit = async (value) =>{
        value.preventDefault();
-       dispatch(loginUser(dataLogin))
-       setEmail('')
-       setPassword('')
+    // dispatch(loginUser(dataLogin))
+       logInWithEmailAndPassword(email, password)
        setModal(false)
     }
 
 
     const signout = () => {
+        logout();
         localStorage.removeItem('isLoggedin')
         localStorage.removeItem('token')
         localStorage.removeItem('profile')
         navigate('/')
     }
 
-    const submitLogin = (credential) => {
-    dispatch(googleLogin(credential))
+    const submitLogin = () => {
+    // dispatch(googleLogin(credential))
     setModal(false)
   };
 
@@ -81,16 +82,13 @@ const Navbars = () => {
     const handleRegis = async (e) =>{
         e.preventDefault();
         checkFirstname();
-        checkLastname();
         checkEmail();
         checkPass();
-        checkPassCon();
-        dispatch(registerUser(dataRegister))
-        setFirstname('');
-        setLastname('');
+        // dispatch(registerUser(dataRegister))
+        registerWithEmailAndPassword(name, emailRegis, passRegis)
+        setName('');
         setEmailregis('');
         setPasswordregis('');
-        setPasswordconfir('');
         setModal2(false)
     }
 
@@ -124,8 +122,8 @@ const Navbars = () => {
     }
 
     const checkFirstname = () => {
-        if(firstName == ''){
-            setErrorFirstN('Please fill First Name')
+        if(name == ''){
+            setErrorFirstN('Please fill Name')
         }else{
             setErrorFirstN('');
         }
@@ -221,12 +219,13 @@ const Navbars = () => {
                         </Col>
                         <Col className="button-form-login">
                             <button className="submit" type='submit'>Login</button>
-                            <GoogleLogin
+                            <button className="submit" onClick={signInWithGoogle}>Login With Google</button>
+                            {/* <GoogleLogin
                             onSuccess={submitLogin}
                             onError={() => {
                                 console.log('Login Failed');
                             }}
-                            />
+                            /> */}
                         </Col>
                     </Row>
                 </form>
@@ -247,16 +246,9 @@ const Navbars = () => {
                     <Row>
                         <Col lg={12}>
                             <div>
-                                <input type='text' className='form-control' placeholder='First Name' onChange={(e) => setFirstname(e.target.value)} />
+                                <input type='text' className='form-control' placeholder='Name' onChange={(e) => setName(e.target.value)} />
                                 <p className="error">{errFirstN}</p>
                                 <span className="user1"><FontAwesomeIcon icon={faUser} /></span>
-                            </div>
-                        </Col>
-                        <Col lg={12}>
-                            <div>
-                                <input type='text' className='form-control' placeholder='Last Name' onChange={(e) => setLastname(e.target.value)} />
-                                <p className="error">{errLastN}</p>
-                                <span className="user2"><FontAwesomeIcon icon={faUser} /></span>
                             </div>
                         </Col>
                         <Col lg={12}>
@@ -272,15 +264,6 @@ const Navbars = () => {
                                 <p className="error">{errPass}</p>
                                 <span className="password-toggle-icon1">
                                 {ToggleIcon}
-                                </span>
-                            </div>
-                        </Col>
-                        <Col lg={12}>
-                            <div>
-                                <input type={PasswordInputType2} className='form-control' placeholder='Password Confirmation' onChange={(e) => setPasswordconfir(e.target.value)} />
-                                <p className="error">{errPassCon}</p>
-                                <span className="password-toggle-icon2">
-                                {ToggleIcon2}
                                 </span>
                             </div>
                         </Col>
