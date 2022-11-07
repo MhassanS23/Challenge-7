@@ -17,13 +17,13 @@ import {
   addDoc,
 } from "firebase/firestore";
 const firebaseConfig = {
-    apiKey: "AIzaSyBFVLf9KN1PbPlD82_Iqbl8RAq5pkKCIKQ",
-    authDomain: "movie-login-b423b.firebaseapp.com",
-    projectId: "movie-login-b423b",
-    storageBucket: "movie-login-b423b.appspot.com",
-    messagingSenderId: "62429124253",
-    appId: "1:62429124253:web:cc75e21eee61cfd8d66674",
-    measurementId: "G-ELQ030YQYZ"
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
+    measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
   };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
